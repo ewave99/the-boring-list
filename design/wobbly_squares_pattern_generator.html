@@ -24,10 +24,14 @@ function drawGrid () {
 function drawWobblyLineHorizontal (y_value) {
     let y_off;
     beginShape();
+    // draws half of the line
     for (var x = 0; x < width / 2; x++) {
         y_off = noise((x+y_value*width)*WAVE_DENSITY) * AMPLITUDE;
         vertex (x, y_value + y_off);
     }
+    // basically the reverse of the above, meaning the line wobble will be
+    // symmetrical. This is important as if we want to tile the finished 
+    // pattern it will look seamless.
     for (; x > 0; x--) {
         y_off = noise((x+y_value*width)*WAVE_DENSITY) * AMPLITUDE;
         vertex (width-x, y_value + y_off);
