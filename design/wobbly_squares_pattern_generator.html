@@ -1,0 +1,51 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js" integrity="sha512-WIklPM6qPCIp6d3fSSr90j+1unQHUOoWDS4sdTiR8gxUTnyZ8S2Mr8e10sKKJ/bhJgpAa/qG068RDkg6fIlNFA==" crossorigin="anonymous"></script>
+<script>
+const AMPLITUDE = 5;
+const WAVE_DENSITY = 0.005;
+const LINE_INTERVAL = 20;
+
+function setup () {
+    createCanvas (400, 400);
+    background (255);
+    noFill ();
+    stroke('#d4dbdd')
+    drawGrid ();
+}
+
+function drawGrid () {
+    for (var x = LINE_INTERVAL / 2; x < width; x += LINE_INTERVAL) {
+        drawWobblyLineVertical (x);
+    }
+    for (var y = LINE_INTERVAL / 2; y < width; y += LINE_INTERVAL) {
+        drawWobblyLineHorizontal (y);
+    }
+}
+
+function drawWobblyLineHorizontal (y_value) {
+    let y_off;
+    beginShape();
+    for (var x = 0; x < width / 2; x++) {
+        y_off = noise((x+y_value*width)*WAVE_DENSITY) * AMPLITUDE;
+        vertex (x, y_value + y_off);
+    }
+    for (; x > 0; x--) {
+        y_off = noise((x+y_value*width)*WAVE_DENSITY) * AMPLITUDE;
+        vertex (width-x, y_value + y_off);
+    }
+    endShape ();
+}
+
+function drawWobblyLineVertical (x_value) {
+    let y_off;
+    beginShape();
+    for (var y = 0; y < height / 2; y++) {
+        x_off = noise((y+x_value*height)*WAVE_DENSITY) * AMPLITUDE;
+        vertex (x_value + x_off, y);
+    }
+    for (; y > 0; y--) {
+        x_off = noise((y+x_value*height)*WAVE_DENSITY) * AMPLITUDE;
+        vertex (x_value + x_off, height-y);
+    }
+    endShape ();
+}
+</script>
