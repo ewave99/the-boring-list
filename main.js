@@ -1,11 +1,11 @@
 const LIST_CONTAINER = document.getElementById ( 'list-container' );
 
-const CHECKBOX_UNCHECKED = "<input type='checkbox' />"
-const CHECKBOX_CHECKED = "<input type='checkbox' checked/>"
+const CHECKBOX_UNCHECKED = "<input type='checkbox' />";
+const CHECKBOX_CHECKED = "<input type='checkbox' checked/>";
 
 // so we can have buttons that make function calls specific to the associated item
-const DELETE_BUTTON_PREFIX = `<input type="button" value="Delete" onclick="Items.deleteItem ( '`
-const DELETE_BUTTON_SUFFIX = `' )" />`
+const DELETE_BUTTON_PREFIX = `<input type="button" value="Delete" onclick="Items.deleteItem ( '`;
+const DELETE_BUTTON_SUFFIX = `' )" />`;
 
 // My attempt at the Modular Design Pattern
 let Items = (
