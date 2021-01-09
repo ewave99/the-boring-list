@@ -22,26 +22,29 @@ let Items = (
             // makes sure the items have unique IDs
             let id = ITEM_ID_PREFIX + ( ++ item_id_counter );
 
-            function display () {
+            let item = {
+                id: id,
+                text: text,
+                completed: false,
+            };
+
+            list.push ( item );
+
+            displayItem ( item );
+        }
+
+        function displayItem ( item ) {
+            // prevents having elements with the same id
+            if ( document.getElementById ( item.id ) == null ) {
                 // displays the right checkbox
-                let checkbox = completed ? CHECKBOX_CHECKED : CHECKBOX_UNCHECKED;
+                let checkbox = item.completed ? CHECKBOX_CHECKED : CHECKBOX_UNCHECKED;
 
                 let node = document.createElement ( 'li' );
-                node.id = id;
-                node.innerHTML = checkbox + text + DELETE_BUTTON_PREFIX + id + DELETE_BUTTON_SUFFIX;
+                node.id = item.id;
+                node.innerHTML = checkbox + item.text + DELETE_BUTTON_PREFIX + item.id + DELETE_BUTTON_SUFFIX;
 
                 LIST_CONTAINER.appendChild ( node );
             }
-
-            // FUTURE: could factor 'display' out as a main method of the Items module
-            list.push (
-                {
-                    id: id,
-                    text: text,
-                    completed: false,
-                    display: display
-                }
-            );
         }
 
         function deleteItem ( item_id ) {
@@ -51,7 +54,7 @@ let Items = (
         }
 
         function displayAll () {
-            for ( item of list ) item.display ();
+            for ( item of list ) displayItem ( item );
         }
 
         function clearAll () {
@@ -60,7 +63,7 @@ let Items = (
 
         return {
             createItem: createItem,
-            displayAll: displayAll,
+            display:    displayAll,
             deleteItem: deleteItem,
             clearAll:   clearAll,
             // only for debugging purposes
@@ -77,5 +80,5 @@ document.body.onload = function () {
     Items.createItem ( 'item 4'       );
     Items.createItem ( 'item 5', true );
 
-    Items.displayAll ();
+    Items.display ();
 }
