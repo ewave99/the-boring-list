@@ -25,7 +25,7 @@ let Items = (
             let item = {
                 id: id,
                 text: text,
-                completed: false,
+                completed: completed
             };
 
             list.push ( item );
