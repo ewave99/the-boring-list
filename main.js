@@ -8,7 +8,7 @@ let Items = (
         const CHECKBOX_UNCHECKED = "<input type='checkbox' />";
         const CHECKBOX_CHECKED = "<input type='checkbox' checked/>";
 
-        // so we can have buttons that make function calls specific to the associated item
+        // these two constants are so we can have buttons that make function calls specific to the associated item
         const DELETE_BUTTON_PREFIX = `<input type="button" value="Delete" onclick="Items.deleteItem ( '`;
         const DELETE_BUTTON_SUFFIX = `' )" />`;
 
