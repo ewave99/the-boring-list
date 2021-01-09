@@ -3,6 +3,7 @@ let Items = (
     function () {
         // all these constants and variables are private
         const LIST_CONTAINER = document.getElementById ( 'list-container' );
+        const ITEM_TEXT_INPUT = document.getElementById ( 'item-text-input' );
 
         const CHECKBOX_UNCHECKED = "<input type='checkbox' />";
         const CHECKBOX_CHECKED = "<input type='checkbox' checked/>";
@@ -61,11 +62,24 @@ let Items = (
             for ( { id } of list ) deleteItem ( id );
         }
 
+        function getTextAndCreateNewItem () {
+            // strip trailing whitespace (thus also preventing input of only whitespace)
+            ITEM_TEXT_INPUT.value = ITEM_TEXT_INPUT.value.replace ( /^\s+/, '' )
+                                                         .replace ( /\s+$/, '' );
+            // prevent items with no text
+            if ( ITEM_TEXT_INPUT.value !== '' ) {
+                createItem ( ITEM_TEXT_INPUT.value );
+
+                ITEM_TEXT_INPUT.value = '';
+            }
+        }
+
         return {
             createItem: createItem,
             display:    displayAll,
             deleteItem: deleteItem,
             clearAll:   clearAll,
+            addNewItem: getTextAndCreateNewItem,
             // only for debugging purposes
             printItems: () => { console.log ( list ); }
         }
@@ -74,6 +88,14 @@ let Items = (
 
 
 document.body.onload = function () {
+    document.getElementById ( 'item-text-input' )
+            .addEventListener ( 'keyup', event => {
+                if ( event.keyCode === 13 ) Items.addNewItem ();
+            } );
+    main ();
+}
+
+function main () {
     Items.createItem ( 'item 1'       );
     Items.createItem ( 'item 2', true );
     Items.createItem ( 'item 3'       );
