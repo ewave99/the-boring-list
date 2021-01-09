@@ -1,16 +1,16 @@
-const LIST_CONTAINER = document.getElementById ( 'list-container' );
-
-const CHECKBOX_UNCHECKED = "<input type='checkbox' />";
-const CHECKBOX_CHECKED = "<input type='checkbox' checked/>";
-
-// so we can have buttons that make function calls specific to the associated item
-const DELETE_BUTTON_PREFIX = `<input type="button" value="Delete" onclick="Items.deleteItem ( '`;
-const DELETE_BUTTON_SUFFIX = `' )" />`;
-
 // My attempt at the Modular Design Pattern
 let Items = (
     function () {
-        // These variables are private
+        // all these constants and variables are private
+        const LIST_CONTAINER = document.getElementById ( 'list-container' );
+
+        const CHECKBOX_UNCHECKED = "<input type='checkbox' />";
+        const CHECKBOX_CHECKED = "<input type='checkbox' checked/>";
+
+        // so we can have buttons that make function calls specific to the associated item
+        const DELETE_BUTTON_PREFIX = `<input type="button" value="Delete" onclick="Items.deleteItem ( '`;
+        const DELETE_BUTTON_SUFFIX = `' )" />`;
+
         let list = [];
         // used in the unique ID when an item is created
         const ITEM_ID_PREFIX = 'item-';
