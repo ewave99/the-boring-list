@@ -54,10 +54,15 @@ let Items = (
             for ( item of list ) item.display ();
         }
 
+        function clearAll () {
+            for ( { id } of list ) deleteItem ( id );
+        }
+
         return {
             createItem: createItem,
             displayAll: displayAll,
             deleteItem: deleteItem,
+            clearAll:   clearAll,
             // only for debugging purposes
             printItems: () => { console.log ( list ); }
         }
