@@ -33,7 +33,7 @@ let Items = (
             let element = document.createElement ( 'div' );
 
             element.setAttribute ( 'id'   ,  item.id  );
-            element.setAttribute ( 'class', 'item'    );
+            element.setAttribute ( 'class', 'item container'    );
 
             return element;
         }
