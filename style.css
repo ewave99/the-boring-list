@@ -11,12 +11,27 @@ h1 {
 }
 
 #list-container {
-    list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
 .item {
     font-weight: lighter;
-    padding: 5px 0 5px 0;
+    padding: 2px 0 2px 0;
 }
+
+/* Custom Checkboxes */
+/*
+.checkbox-container {
+    display:             block;
+    position:            relative;
+    padding-left:        35px;
+    margin-bottom:       12px;
+    cursor:              pointer;
+    font-size:           22px;
+    -webkit-user-select: none;
+    -moz-user-select:    none;
+    -ms-user-select:     none;
+    user-select:         none;
+}
+*/

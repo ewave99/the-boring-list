@@ -15,7 +15,7 @@ let Items = (
         //     DOM METHODS --------------------------------------
 
         function createDOMStructureForItem ( item ) {
-            let list_item_element = createListItemForItem ( item );
+            let div_item_element  = createDivItemForItem ( item );
             let label_element     = createLabelForItem    ( item );
 
             label_element.appendChild ( createTextElementForItem   ( item ) );
@@ -23,14 +23,14 @@ let Items = (
             // FUTURE: factor this out as a constant
             label_element.appendChild ( createCheckmarkSpanForItem (      ) );
 
-            list_item_element.appendChild ( label_element                      );
-            list_item_element.appendChild ( createDeleteButtonForItem ( item ) );
+            div_item_element.appendChild ( label_element                      );
+            div_item_element.appendChild ( createDeleteButtonForItem ( item ) );
 
-            return list_item_element;
+            return div_item_element;
         }
 
-        function createListItemForItem ( item ) {
-            let element = document.createElement ( 'li' );
+        function createDivItemForItem ( item ) {
+            let element = document.createElement ( 'div' );
 
             element.setAttribute ( 'id'   ,  item.id  );
             element.setAttribute ( 'class', 'item'    );
