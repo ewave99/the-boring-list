@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400&display=swap');
+
+body {
+    background-image: url("design/background.png");
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h1 {
+    font-weight: normal;
+    margin: 0;
+}
+
+#list-container {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.item {
+    font-weight: lighter;
+    padding: 5px 0 5px 0;
+}
