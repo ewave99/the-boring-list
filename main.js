@@ -2,10 +2,11 @@
 let Items = (
     function () {
         // all these constants and variables are private
-        const LIST_CONTAINER = document.getElementById ( 'list-container' );
+        const LIST_CONTAINER  = document.getElementById ( 'list-container' );
         const ITEM_TEXT_INPUT = document.getElementById ( 'item-text-input' );
 
         let list = [];
+
         // used in the unique ID when an item is created
         const ITEM_ID_PREFIX = 'item-';
         let item_id_counter = -1;
@@ -32,7 +33,7 @@ let Items = (
         function createDivItemForItem ( item ) {
             let element = document.createElement ( 'div' );
 
-            element.setAttribute ( 'id'   ,  item.id  );
+            element.setAttribute ( 'id'   ,  item.id            );
             element.setAttribute ( 'class', 'item container'    );
 
             return element;

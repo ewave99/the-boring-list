@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head lang='en'>
+    <meta charset='utf-8' />
+    <style>
+input[type='checkbox'] {
+    opacity:            0;
+    appearance:         none;
+    -webkit-appearance: none;
+    display:            inline-block;
+    vertical-align:     middle;
+    z-index:            100;
+    box-sizing:         border-box;
+    padding:            0;
+}
+
+button, input {
+    line-height: normal;
+}
+
+input[type='checkbox'], label::before {
+    width:      15px;
+    height:     15px;
+    top:        50%;
+    left:       5px;
+    margin-top: -10px;
+    position:   absolute;
+    cursor:     pointer;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    margin:   0 auto;
+    padding:  1em 0;
+    position: relative;
+}
+
+input[type='checkbox']:checked + label::before {
+    opacity: 0.8;
+}
+
+input[type='checkbox']:checked + label {
+    color: rgba(0,0,0,0.2);
+}
+
+label::before {
+    content:       '';
+    border:        1px solid #000;
+    border-radius: 50%;
+    transition:    opacity 0.3s;
+}
+
+label {
+    display:            inline-block;
+    position:           relative;
+/*    font-size:          2em;*/
+    padding:            0 0 0 80px;
+    vertical-align:     top;
+    color:              rgba(0,0,0,1);
+    cursor:             pointer;
+    -webkit-transition: color 0.3s;
+    transition:         color 0.3s;
+}
+
+svg {
+    position:       absolute;
+    width:          30px;
+    height:         30px;
+    top:            50%;
+    margin-top:     -25px;
+    left:           2px;
+    pointer-events: none;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+svg path {
+    stroke:          #000;
+    stroke-width:    7px;
+    stroke-linecap:  round;
+    stroke-linejoin: round;
+    fill:            none;
+}
+    </style>
+</head>
+<body>
+    <ul>
+        <li>
+            <input id="c1" name="c1" type="checkbox" />
+            <label for="c1">Dummy Item</label>
+        </li>
+        <li>
+            <input id="c2" name="c2" type="checkbox" />
+            <label for="c2">Dummy Item</label>
+        </li>
+        <li>
+            <input id="c3" name="c3" type="checkbox" />
+            <label for="c3">Dummy Item</label>
+        </li>
+    </ul>
+    <script>
+if ( document .createElement ( 'svg' ) .getAttributeNS ) {
+    let checkbox_checkmark = Array .prototype .slice .call (
+        document .querySelectorAll ( 'input[type="checkbox"]' )
+    );
+
+    let path_defs = {
+        checkmark : [
+            'M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16'
+        ]
+    };
+
+    let anim_defs = {
+        checkmark : {
+            speed  : 0.2,
+            easing : 'ease-in-out'
+        }
+    };
+
+    function createSVGEl ( def ) {
+        let svg = document .createElementNS ( "http://www.w3.org/2000/svg", "svg" );
+
+        if ( def ) {
+            svg .setAttributeNS (
+                null,
+                'viewBox',
+                def .viewBox
+            );
+            svg .setAttributeNS (
+                null,
+                'preserveAspectRatio',
+                def .preserveAspectRatio
+            );
+        }
+        else {
+            svg .setAttributeNS ( null, 'viewBox', '0 0 100 100' );
+        }
+
+        svg .setAttribute ( 'xmlns', 'http://www.w3.org/2000/svg' );
+
+        return svg;
+    }
+
+    function controlCheckbox ( el, type, svg_def ) {
+        let svg = createSVGEl ( svg_def );
+
+        el .parentNode .appendChild ( svg );
+
+        el .addEventListener (
+            'change',
+            () => {
+                if ( el .checked ) {
+                    draw ( el, type );
+                }
+                else {
+                    reset ( el );
+                }
+            }
+        );
+    }
+
+    checkbox_checkmark .forEach (
+        ( el, i ) => {
+            controlCheckbox ( el, 'checkmark' );
+        }
+    );
+
+    function draw ( el, type ) {
+        let paths = [];
+        let path_def, anim_def;
+        let svg = el .parentNode .querySelector ( 'svg' );
+        
+        switch ( type ) {
+            case 'checkmark':
+                path_def = path_defs .checkmark;
+                anim_def = anim_defs .checkmark;
+                break;
+        }
+
+        paths.push (
+            document .createElementNS (
+                'http://www.w3.org/2000/svg',
+                'path'
+            )
+        );
+
+        if ( type === 'cross' || type === 'list' ) {
+            paths .push (
+                document .createElementNS (
+                    'http://www.w3.org/2000/svg',
+                    'path'
+                )
+            );
+        }
+
+        for ( var i = 0, len = paths .length; i < len; ++ i ) {
+            let path = paths [ i ];
+
+            svg .appendChild ( path );
+
+            path .setAttributeNS ( null, 'd', path_def [ i ] ) ;
+            
+            let length = path .getTotalLength ();
+
+            path .style .strokeDasharray = length + ' ' + length;
+
+            if ( i === 0 ) {
+                path .style .strokeDashoffset = Math.floor ( length ) - 1;
+            }
+            else {
+                path .style .strokeDashoffset = length;
+            }
+
+            // Trigger a layout so styles are calculated, and the browser
+            // picks up the starting position before animating
+            path .getBoundingClientRect ()
+            // Define our transition
+            path .style .transition = path .style .WebkitTransition
+                                    = path .style .MozTransition
+                                    = 'stroke-dashoffset '
+                                        + anim_def .speed
+                                        + 's '
+                                        + anim_def .easing
+                                        + ' '
+                                        + i * anim_def .speed
+                                        + 's';
+            // Go!
+            path .style .strokeDashoffset = '0';
+        }
+    }
+
+    function reset ( el ) {
+        Array .prototype .slice .call (
+            el .parentNode .querySelectorAll (
+                'svg > path'
+            )
+        ) .forEach (
+            ( el ) => {
+                el .parentNode .removeChild ( el );
+            }
+        );
+    }
+}
+    </script>
+</body>
+</html>
