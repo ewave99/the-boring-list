@@ -5,6 +5,11 @@ body {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+#container {
+    display: flex;
+    justify-content: center;
+}
+
 h1 {
     font-weight: normal;
     margin: 0;

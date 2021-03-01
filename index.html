@@ -7,12 +7,16 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css" integrity="sha512-LeCmts7kEi09nKc+DwGJqDV+dNQi/W8/qb0oUSsBLzTYiBwxj0KBlAow2//jV7jwEHwSCPShRN2+IWwWcn1x7Q==" crossorigin="anonymous" />
     </head>
     <body>
-        <h1>The Boring List</h1>
-        <ul id='list-container'>
-        </ul>
-        <input id='item-text-input' type='text' placeholder='Write new item...' />
-        <button type='button' onclick='Items.addNewItem ()'><span class="oi" data-glyph="check"></span></button>
-        <button type='button' class='red' onclick='Items.clearAll ()'><span class="oi" data-glyph="trash"></span></button>
+        <div id='container'>
+            <div id='app'>
+                <h1>The Boring List</h1>
+                <ul id='list-container'>
+                </ul>
+                <input id='item-text-input' type='text' placeholder='Write new item...' />
+                <button type='button' onclick='Items.addNewItem ()'><span class="oi" data-glyph="check"></span></button>
+                <button type='button' class='red' onclick='Items.clearAll ()'><span class="oi" data-glyph="trash"></span></button>
+            </div>
+        </div>
 
         <script src='main.js'></script>
     </body>
