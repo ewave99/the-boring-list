@@ -10,80 +10,89 @@ h1 {
     margin: 0;
 }
 
-#list-container {
-    margin: 0;
-    padding: 0;
-}
-
 .item {
     font-weight: lighter;
     padding: 2px 0 2px 0;
 }
 
-/* Custom Checkboxes */
-.container {
-    display:             block;
-    position:            relative;
-    padding-left:        35px;
-    margin-bottom:       12px;
-    cursor:              pointer;
-    font-size:           22px;
-    -webkit-user-select: none;
-    -moz-user-select:    none;
-    -ms-user-select:     none;
-    user-select:         none;
+input[type='checkbox'] {
+    opacity:            0;
+    appearance:         none;
+    -webkit-appearance: none;
+    display:            inline-block;
+    vertical-align:     middle;
+    z-index:            100;
+    box-sizing:         border-box;
+    padding:            0;
 }
 
-/* Hide the browser's default checkbox */
-.checkbox-container input[type='checkbox'] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
+button, input {
+    line-height: normal;
 }
 
-/* Create a custom checkbox */
-.checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
+input[type='checkbox'], label::before {
+    width:      10px;
+    height:     10px;
+    top:        50%;
+    left:       5px;
+    margin-top: -7px;
+    position:   absolute;
+    cursor:     pointer;
 }
 
-/* On mouse-over, add a grey background color */
-.checkbox-container:hover input ~ .checkmark {
-    background-color: #ccc;
+ul {
+    list-style: none;
 }
 
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-    background-color: #2196F3;
+li {
+    margin:   0 auto;
+    padding:  1em 0;
+    position: relative;
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
+input[type='checkbox']:checked + label::before {
+    opacity: 0.8;
 }
 
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-    display: block;
+input[type='checkbox']:checked + label {
+    color: rgba(0,0,0,0.2);
 }
 
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-    left: 9px;
-    top: 5px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+label::before {
+    content:       '';
+    border:        1px solid #888;
+    border-radius: 50%;
+}
+
+label {
+    display:            inline-block;
+    position:           relative;
+    padding:            0 0 0 80px;
+    vertical-align:     top;
+    color:              rgba(0,0,0,1);
+    cursor:             pointer;
+    -webkit-transition: color 0.3s;
+    transition:         color 0.3s;
+}
+
+svg {
+    position:       absolute;
+    width:          28px;
+    height:         28px;
+    top:            50%;
+    margin-top:     -28px;
+    left:           0px;
+    pointer-events: none;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+svg path {
+    stroke:          #000;
+    stroke-width:    5px;
+    stroke-linecap:  round;
+    stroke-linejoin: round;
+    fill:            none;
 }
