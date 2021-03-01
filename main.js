@@ -106,7 +106,14 @@ let Items = (
             if ( document.getElementById ( item.id ) == null ) {
                 let item_node = createDOMStructureForItem ( item );
 
-                LIST_CONTAINER.appendChild ( item_node );
+                LIST_CONTAINER .appendChild ( item_node );
+
+                SVGCheckbox .controlCheckbox (
+                    document .getElementById (
+                        item.id + '-checkbox',
+                        'checkmark'
+                    )
+                );
             }
         }
 
@@ -305,17 +312,5 @@ function main () {
     Items.createItem ( 'item 5', true );
 
     Items.display ();
-
-    let checkboxes = Array .prototype .slice .call (
-        document .querySelectorAll ( 'input[type="checkbox"]' )
-    );
-
-    if ( document .createElement ( 'svg' ) .getAttributeNS ) {
-        checkboxes .forEach (
-            ( el, i ) => {
-                SVGCheckbox .controlCheckbox ( el, 'checkmark' );
-            }
-        );
-    }
 }
 
