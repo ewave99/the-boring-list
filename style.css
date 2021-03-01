@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400&display=swap');
 
 body {
-    background-image: url("design/background.png");
+    background-image: url("assets/background.png");
     font-family: 'Roboto Condensed', sans-serif;
 }
 
@@ -13,6 +13,25 @@ h1 {
 .item {
     font-weight: lighter;
     padding: 2px 0 2px 0;
+}
+
+button {
+    border: none;
+    background: none;
+    color: #000;
+    cursor: pointer;
+}
+
+button:hover {
+    color: #888;
+}
+
+button.red {
+    color: #f00;
+}
+
+button.red:hover {
+    color: #f88;
 }
 
 input[type='checkbox'] {
@@ -67,7 +86,7 @@ label::before {
 label {
     display:            inline-block;
     position:           relative;
-    padding:            0 0 0 80px;
+    padding:            0 5px 0 80px;
     vertical-align:     top;
     color:              rgba(0,0,0,1);
     cursor:             pointer;

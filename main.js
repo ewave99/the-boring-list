@@ -75,11 +75,17 @@ let Items = (
         }
 
         function createDeleteButtonForItem ( item ) {
-            let delete_button_element = document.createElement ( 'input' );
+            let delete_button_element = document.createElement ( 'button' );
+
+            let icon = document.createElement ( 'span' );
 
             delete_button_element.setAttribute ( 'type'   , 'button'                            );
-            delete_button_element.setAttribute ( 'value'  , 'Delete'                            );
             delete_button_element.setAttribute ( 'onclick', `Items.deleteItem ( '${item.id}' )` );
+
+            icon .setAttribute ( 'class', 'oi' );
+            icon .setAttribute ( 'data-glyph', 'trash' );
+
+            delete_button_element .appendChild ( icon );
 
             return delete_button_element;
         }
