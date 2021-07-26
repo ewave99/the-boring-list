@@ -11,7 +11,7 @@ let SVGCheckbox = ( function () {
 
     let anim_defs = {
         checkmark : {
-            speed  :  0.2,
+            speed : 0.2,
             easing : 'ease-in-out'
         }
     };
@@ -69,7 +69,7 @@ let SVGCheckbox = ( function () {
         let path_def, anim_def;
         let svg = el.parentNode.querySelector ( 'svg' );
         //console.log ( el );
-        
+
         path_def = path_defs.checkmark;
         anim_def = anim_defs.checkmark;
 
@@ -95,7 +95,7 @@ let SVGCheckbox = ( function () {
             svg.appendChild ( path );
 
             path.setAttributeNS ( null, 'd', path_def [ i ] );
-            
+
             let length = path.getTotalLength ();
 
             path.style.strokeDasharray = length + ' ' + length;
