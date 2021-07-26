@@ -1,3 +1,7 @@
+/* Define the namespace 'SVGCheckbox', containing methods to control the
+ * animations of the checkboxes. These methods were taken off a tutorial to
+ * create animated checkboxes so I need to work out what exactly the variable
+ * names mean (e.g. 'def'). */
 let SVGCheckbox = ( function () {
     let path_defs = {
         checkmark : [
@@ -103,10 +107,8 @@ let SVGCheckbox = ( function () {
                 path .style .strokeDashoffset = length;
             }
 
-            // Trigger a layout so styles are calculated, and the browser
-            // picks up the starting position before animating
             path .getBoundingClientRect ()
-            // Define our transition
+
             path .style .transition = path .style .WebkitTransition
                                     = path .style .MozTransition
                                     = 'stroke-dashoffset '
@@ -116,7 +118,7 @@ let SVGCheckbox = ( function () {
                                         + ' '
                                         + i * anim_def .speed
                                         + 's';
-            // Go!
+
             path .style .strokeDashoffset = '0';
         }
     }
