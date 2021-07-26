@@ -1,316 +1,224 @@
-// My attempt at the Modular Design Pattern
-let Items = (
-    function () {
-        // all these constants and variables are private
-        const LIST_CONTAINER  = document.getElementById ( 'list-container' );
-        const ITEM_TEXT_INPUT = document.getElementById ( 'item-text-input' );
+/* TODOS:
+ * - This code is a little messy in terms of comments and the actual order of
+ *   the functions. Sort it out.
+ */
 
-        let list = [];
+/* here we declare an object which exports various public functions and contains
+ * variables and private functions in a closure */
+let Items = ( function () {
+    /* DOM elements */
+    const LIST_CONTAINER  = document.getElementById ( 'list-container' );
+    const ITEM_TEXT_INPUT = document.getElementById ( 'item-text-input' );
+    
+    /* Prefix to use in the generated ID for an item */
+    const ITEM_ID_PREFIX = 'item-';
 
-        // used in the unique ID when an item is created
-        const ITEM_ID_PREFIX = 'item-';
-        let item_id_counter = -1;
+    /* This kind of functions like the autoincrement of a unique ID in a
+     * database. In short, we increment this counter every time we create an
+     * item to ensure all the items have unique IDs. */
+    let item_id_counter = 0;
 
-        // METHODS ----------------------------------------------
+    /* Initialise the list of items */
+    let items_list = [];
+    
+    function getTextAndCreateNewItem () {
+        /* Get text value of the entry box and use it as the text value of a new
+         * item. */
 
-        //     DOM METHODS --------------------------------------
-
-        function createDOMStructureForItem ( item ) {
-            let li_item_element  = createLiItemForItem ( item );
-
-            li_item_element.appendChild ( createCheckboxForItem      ( item ) );
-
-            // FUTURE: factor this out as a constant
-            let label_element     = createLabelForItem    ( item );
-            label_element.appendChild ( createTextElementForItem   ( item ) );
-
-            li_item_element.appendChild ( label_element                      );
-            li_item_element.appendChild ( createDeleteButtonForItem ( item ) );
-
-            return li_item_element;
-        }
-
-        function createLiItemForItem ( item ) {
-            let element = document.createElement ( 'li' );
-
-            element.setAttribute ( 'id'   ,  item.id            );
-            element.setAttribute ( 'class', 'item container'    );
-
-            return element;
-        }
-
-        function createCheckboxForItem ( item ) {
-            let element = document.createElement ( 'input' );
-
-            element.setAttribute ( 'type', 'checkbox'             );
-            element.setAttribute ( 'id',    item.id + '-checkbox' )
-            element.setAttribute ( 'name',  item.id + '-checkbox' )
-
-            if ( item.completed ) {
-                element.setAttribute ( 'checked', '' );
-            }
-
-            return element;
-        }
-
-        function createTextElementForItem ( item ) {
-            return document.createTextNode ( item.text );
-        }
-
-        function createLabelForItem ( item ) {
-            let element = document.createElement ( 'label' );
-
-            element.setAttribute ( 'class', 'checkbox-container'   );
-            element.setAttribute ( 'for',    item.id + '-checkbox' );
-
-            return element;
-        }
-
-        function createCheckmarkSpanForItem () {
-            let checkmark_span_element = document.createElement ( 'span' );
-
-            checkmark_span_element.setAttribute ( 'class', 'checkmark' );
-
-            return checkmark_span_element;
-        }
-
-        function createDeleteButtonForItem ( item ) {
-            let delete_button_element = document.createElement ( 'button' );
-
-            let icon = document.createElement ( 'span' );
-
-            delete_button_element.setAttribute ( 'type'   , 'button'                            );
-            delete_button_element.setAttribute ( 'onclick', `Items.deleteItem ( '${item.id}' )` );
-
-            icon .setAttribute ( 'class', 'oi' );
-            icon .setAttribute ( 'data-glyph', 'trash' );
-
-            delete_button_element .appendChild ( icon );
-
-            return delete_button_element;
-        }
-
-        //     METHODS FOR ITEMS --------------------------------
-
-        function createItem ( text, completed = false ) {
-            // makes sure the items have unique IDs
-            let id = ITEM_ID_PREFIX + ( ++ item_id_counter );
-
-            let item = {
-                id: id,
-                text: text,
-                completed: completed
-            };
-
-            list.push ( item );
-
-            displayItem ( item );
-        }
-
-        function displayItem ( item ) {
-            // prevents having elements with the same id
-            if ( document.getElementById ( item.id ) == null ) {
-                let item_node = createDOMStructureForItem ( item );
-
-                LIST_CONTAINER .appendChild ( item_node );
-
-                SVGCheckbox .controlCheckbox (
-                    document .getElementById (
-                        item.id + '-checkbox',
-                        'checkmark'
-                    )
-                );
-            }
-        }
-
-        function deleteItem ( item_id ) {
-            LIST_CONTAINER.removeChild ( document.getElementById ( item_id ) );
-
-            list = list.filter ( ({ id }) => id != item_id );
-        }
-
-        function displayAll () {
-            for ( item of list ) displayItem ( item );
-        }
-
-        function clearAll () {
-            for ( { id } of list ) deleteItem ( id );
-        }
-
-        function getTextAndCreateNewItem () {
-            // strip trailing whitespace (thus also preventing input of only whitespace)
-            ITEM_TEXT_INPUT.value = ITEM_TEXT_INPUT.value.replace ( /^\s+/, '' )
-                                                         .replace ( /\s+$/, '' );
-            // prevent items with no text
-            if ( ITEM_TEXT_INPUT.value !== '' ) {
-                createItem ( ITEM_TEXT_INPUT.value );
-
-                ITEM_TEXT_INPUT.value = '';
-            }
-        }
-
-        return {
-            createItem: createItem,
-            display:    displayAll,
-            deleteItem: deleteItem,
-            clearAll:   clearAll,
-            addNewItem: getTextAndCreateNewItem,
-            // only for debugging purposes
-            printItems: () => { console.log ( list ); }
+        /* Strip trailing whitespace (thus also preventing input of only
+         * whitespace). */
+        ITEM_TEXT_INPUT.value = ITEM_TEXT_INPUT.value.replace ( /^\s+/, '' )
+                                                     .replace ( /\s+$/, '' );
+        /* if the entry box is not empty: */
+        if ( ITEM_TEXT_INPUT.value !== '' ) {
+            /* create a new item whose text-value is the value of the entry box
+             */
+            createItem ( ITEM_TEXT_INPUT.value );
+    
+            /* Delete the text the user has typed into the entry box */
+            ITEM_TEXT_INPUT.value = '';
         }
     }
-) ();
 
-let SVGCheckbox = ( function () {
-    let path_defs = {
-        checkmark : [
-            'M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16'
-        ]
-    };
+    function createItem ( text, completed = false ) {
+        /* Initialise an item object containing information associated with the
+         * item and push it to the list of items. Display the item on the page.
+         */
 
-    let anim_defs = {
-        checkmark : {
-            speed  :  0.2,
-            easing : 'ease-in-out'
-        }
-    };
+        let id = ITEM_ID_PREFIX + item_id_counter;
 
-    function createSVGEl ( def ) {
-        let svg = document .createElementNS ( "http://www.w3.org/2000/svg", "svg" );
-
-        if ( def ) {
-            svg .setAttributeNS (
-                 null,
-                'viewBox',
-                 def .viewBox
-            );
-            svg .setAttributeNS (
-                 null,
-                'preserveAspectRatio',
-                 def .preserveAspectRatio
-            );
-        }
-        else {
-            svg .setAttributeNS ( null, 'viewBox', '0 0 100 100' );
-        }
-
-        svg .setAttribute ( 'xmlns', 'http://www.w3.org/2000/svg' );
-
-        return svg;
+        /* As mentioned earlier on, this makes sure the items have unique IDs */
+        item_id_counter ++;
+    
+        /* create the object of information associated with the item */
+        let item = {
+            id: id,
+            text: text,
+            completed: completed
+        };
+    
+        /* push the information object to the list of items */
+        items_list.push ( item );
+    
+        /* display the item on the page */
+        displayItem ( item );
     }
 
-    function controlCheckbox ( el, type, svg_def ) {
-        let svg = createSVGEl ( svg_def );
-
-        el .parentNode .appendChild ( svg );
-        if ( el .checked ) {
-            draw ( el, type );
-        }
-        else {
-            reset ( el );
-        }
-
-        el .addEventListener (
-            'change',
-            () => {
-                if ( el .checked ) {
-                    draw ( el, type );
-                }
-                else {
-                    reset ( el );
-                }
-            }
-        );
+    function displayAll () {
+        /* walk through all the items in the list and display them */
+        for ( item of items_list ) displayItem ( item );
     }
 
-    function draw ( el, type ) {
-        let paths = [];
-        let path_def, anim_def;
-        let svg = el .parentNode .querySelector ( 'svg' );
-        console.log ( el );
-        
-        path_def = path_defs .checkmark;
-        anim_def = anim_defs .checkmark;
+    function displayItem ( item ) {
+        /* Accept the information object of an item. Create the DOM structure
+         * to represent the item. Then append the DOM structure to the
+         * pre-existing list-element in the DOM. Then tell the
+         * SVG-checkbox-controller function to control the state of the item's
+         * checkbox. */
 
-        paths.push (
-            document .createElementNS (
-                'http://www.w3.org/2000/svg',
-                'path'
-            )
-        );
-
-        if ( type === 'cross' || type === 'list' ) {
-            paths .push (
-                document .createElementNS (
-                    'http://www.w3.org/2000/svg',
-                    'path'
+        /* Even though it should be impossible, with the auto-intcrementing of
+         * the ID numbers, for two items to have the same ID, this just adds an
+         * extra safety net. */
+        if ( document.getElementById ( item.id ) == null ) {
+            /* create the DOM node for the item, with its complete structure of
+             * sub-nodes. After this we are ready to push the item to the live
+             * DOM. */
+            let item_node = createDOMStructureForItem ( item );
+    
+            /* Push the item to the live DOM to make it visible on the page. */
+            LIST_CONTAINER .appendChild ( item_node );
+    
+            /* Pass the id of the created checkbox of the item to the
+             * SVG-checkbox-controller function. This ensures we are able to
+             * actually use the checkbox, complete with all its fancy
+             * animations. */
+            SVGCheckbox .controlCheckbox (
+                document .getElementById (
+                    item.id + '-checkbox',
+                    'checkmark'
                 )
             );
         }
+    }
+    
+    function createDOMStructureForItem ( item ) {
+        /* Create various DOM elements needed to display the item and 'stitch'
+         * them together. (The function calls are ordered in terms of
+         * significance in the DOM hierarchy - nodes, then sub-nodes, then
+         * sub-sub-nodes, etc. */
 
-        for ( var i = 0, len = paths .length; i < len; ++ i ) {
-            let path = paths [ i ];
-
-            svg .appendChild ( path );
-
-            path .setAttributeNS ( null, 'd', path_def [ i ] ) ;
-            
-            let length = path .getTotalLength ();
-
-            path .style .strokeDasharray = length + ' ' + length;
-
-            if ( i === 0 ) {
-                path .style .strokeDashoffset = Math.floor ( length ) - 1;
-            }
-            else {
-                path .style .strokeDashoffset = length;
-            }
-
-            // Trigger a layout so styles are calculated, and the browser
-            // picks up the starting position before animating
-            path .getBoundingClientRect ()
-            // Define our transition
-            path .style .transition = path .style .WebkitTransition
-                                    = path .style .MozTransition
-                                    = 'stroke-dashoffset '
-                                        + anim_def .speed
-                                        + 's '
-                                        + anim_def .easing
-                                        + ' '
-                                        + i * anim_def .speed
-                                        + 's';
-            // Go!
-            path .style .strokeDashoffset = '0';
+        let li_item_element  = createLiItemForItem ( item );
+    
+        li_item_element.appendChild ( createCheckboxForItem      ( item ) );
+    
+        let label_element     = createLabelForItem    ( item );
+        label_element.appendChild ( createTextElementForItem   ( item ) );
+    
+        li_item_element.appendChild ( label_element                      );
+        li_item_element.appendChild ( createDeleteButtonForItem ( item ) );
+    
+        return li_item_element;
+    }
+    
+    function createLiItemForItem ( item ) {
+        let element = document.createElement ( 'li' );
+    
+        element.setAttribute ( 'id'   ,  item.id            );
+        element.setAttribute ( 'class', 'item container'    );
+    
+        return element;
+    }
+    
+    function createCheckboxForItem ( item ) {
+        let element = document.createElement ( 'input' );
+    
+        element.setAttribute ( 'type', 'checkbox'             );
+        element.setAttribute ( 'id',    item.id + '-checkbox' )
+        element.setAttribute ( 'name',  item.id + '-checkbox' )
+    
+        if ( item.completed ) {
+            element.setAttribute ( 'checked', '' );
         }
+    
+        return element;
+    }
+    
+    function createTextElementForItem ( item ) {
+        return document.createTextNode ( item.text );
+    }
+    
+    function createLabelForItem ( item ) {
+        let element = document.createElement ( 'label' );
+    
+        element.setAttribute ( 'class', 'checkbox-container'   );
+        element.setAttribute ( 'for',    item.id + '-checkbox' );
+    
+        return element;
+    }
+    
+    function createCheckmarkSpanForItem () {
+        let checkmark_span_element = document.createElement ( 'span' );
+    
+        checkmark_span_element.setAttribute ( 'class', 'checkmark' );
+    
+        return checkmark_span_element;
+    }
+    
+    function createDeleteButtonForItem ( item ) {
+        let delete_button_element = document.createElement ( 'button' );
+    
+        let icon = document.createElement ( 'span' );
+    
+        delete_button_element.setAttribute ( 'type'   , 'button'                            );
+        delete_button_element.setAttribute ( 'onclick', `Items.deleteItem ( '${item.id}' )` );
+    
+        icon .setAttribute ( 'class', 'oi' );
+        icon .setAttribute ( 'data-glyph', 'trash' );
+    
+        delete_button_element .appendChild ( icon );
+    
+        return delete_button_element;
     }
 
-    function reset ( el ) {
-        Array .prototype .slice .call (
-            el .parentNode .querySelectorAll (
-                'svg > path'
-            )
-        ) .forEach (
-            ( el ) => {
-                el .parentNode .removeChild ( el );
-            }
-        );
+    function clearAll () {
+        /* walk through all the items, deleting them one by one. */
+        for ( { id } of items_list ) deleteItem ( id );
     }
 
+    function deleteItem ( item_id ) {
+        /* remove the item node from the DOM so it is no longer visible. */
+        LIST_CONTAINER.removeChild ( document.getElementById ( item_id ) );
+    
+        /* filter out the item information object from the list so the list no
+         * longer contains the associated object. */
+        items_list = items_list.filter ( ({ id }) => id != item_id );
+    }
+    
     return {
-        controlCheckbox: controlCheckbox,
-        draw:            draw
-    };
+        createItem: createItem,
+        display:    displayAll,
+        deleteItem: deleteItem,
+        clearAll:   clearAll,
+        addNewItem: getTextAndCreateNewItem,
+        // only for debugging purposes
+        printItems: () => { console.log ( items_list ); }
+    }
 } ) ();
 
 document.body.onload = function () {
+    /* Listen for keyup events. If the keycode corresponds to the Enter key,
+     * add the item to the to-do list. */
     document.getElementById ( 'item-text-input' )
             .addEventListener ( 'keyup', event => {
+                /* keycode 13 is Enter */
                 if ( event.keyCode === 13 ) Items.addNewItem ();
             } );
     main ();
 }
 
 function main () {
+    /* In production we wouldn't have this 'main' function. This function just
+     * demonstrates the program's functionality. */
     Items.createItem ( 'item 1'       );
     Items.createItem ( 'item 2', true );
     Items.createItem ( 'item 3'       );
