@@ -7,7 +7,11 @@
  * variables and private functions in a closure */
 let Items = ( function () {
     /* DOM elements */
+
+    /* <ul> element that contains all our items */
     const LIST_CONTAINER  = document.getElementById ( 'list-container' );
+    /* the <input type='text'> element that we type the next to-do item text
+     * into */
     const ITEM_TEXT_INPUT = document.getElementById ( 'item-text-input' );
     
     /* Prefix to use in the generated ID for an item */
@@ -21,14 +25,17 @@ let Items = ( function () {
     /* Initialise the list of items */
     let items_list = [];
     
-    function getTextAndCreateNewItem () {
+    function addItemFromEntryBox () {
         /* Get text value of the entry box and use it as the text value of a new
          * item. */
 
         /* Strip trailing whitespace (thus also preventing input of only
          * whitespace). */
-        ITEM_TEXT_INPUT.value = ITEM_TEXT_INPUT.value.replace ( /^\s+/, '' )
-                                                     .replace ( /\s+$/, '' );
+        ITEM_TEXT_INPUT.value = ITEM_TEXT_INPUT
+            .value
+            .replace ( /^\s+/, '' )
+            .replace ( /\s+$/, '' );
+
         /* if the entry box is not empty: */
         if ( ITEM_TEXT_INPUT.value !== '' ) {
             /* create a new item whose text-value is the value of the entry box
@@ -52,9 +59,9 @@ let Items = ( function () {
     
         /* create the object of information associated with the item */
         let item = {
-            id: id,
-            text: text,
-            completed: completed
+            id        : id,
+            text      : text,
+            completed : completed
         };
     
         /* push the information object to the list of items */
@@ -86,14 +93,14 @@ let Items = ( function () {
             let item_node = createDOMStructureForItem ( item );
     
             /* Push the item to the live DOM to make it visible on the page. */
-            LIST_CONTAINER .appendChild ( item_node );
+            LIST_CONTAINER.appendChild ( item_node );
     
             /* Pass the id of the created checkbox of the item to the
              * SVG-checkbox-controller function. This ensures we are able to
              * actually use the checkbox, complete with all its fancy
              * animations. */
-            SVGCheckbox .controlCheckbox (
-                document .getElementById (
+            SVGCheckbox.controlCheckbox (
+                document.getElementById (
                     item.id + '-checkbox',
                     'checkmark'
                 )
@@ -107,14 +114,15 @@ let Items = ( function () {
          * significance in the DOM hierarchy - nodes, then sub-nodes, then
          * sub-sub-nodes, etc. */
 
-        let li_item_element  = createLiItemForItem ( item );
+        let li_item_element = createLiItemForItem ( item );
     
-        li_item_element.appendChild ( createCheckboxForItem      ( item ) );
+        li_item_element.appendChild ( createCheckboxForItem ( item ) );
     
-        let label_element     = createLabelForItem    ( item );
-        label_element.appendChild ( createTextElementForItem   ( item ) );
+        let label_element = createLabelForItem ( item );
+        label_element.appendChild ( createTextElementForItem ( item ) );
     
-        li_item_element.appendChild ( label_element                      );
+        li_item_element.appendChild ( label_element );
+
         li_item_element.appendChild ( createDeleteButtonForItem ( item ) );
     
         return li_item_element;
@@ -132,9 +140,9 @@ let Items = ( function () {
     function createCheckboxForItem ( item ) {
         let element = document.createElement ( 'input' );
     
-        element.setAttribute ( 'type', 'checkbox'             );
-        element.setAttribute ( 'id',    item.id + '-checkbox' )
-        element.setAttribute ( 'name',  item.id + '-checkbox' )
+        element.setAttribute ( 'type', 'checkbox' );
+        element.setAttribute ( 'id', item.id + '-checkbox' );
+        element.setAttribute ( 'name', item.id + '-checkbox' );
     
         if ( item.completed ) {
             element.setAttribute ( 'checked', '' );
@@ -150,8 +158,8 @@ let Items = ( function () {
     function createLabelForItem ( item ) {
         let element = document.createElement ( 'label' );
     
-        element.setAttribute ( 'class', 'checkbox-container'   );
-        element.setAttribute ( 'for',    item.id + '-checkbox' );
+        element.setAttribute ( 'class', 'checkbox-container' );
+        element.setAttribute ( 'for', item.id + '-checkbox' );
     
         return element;
     }
@@ -169,13 +177,13 @@ let Items = ( function () {
     
         let icon = document.createElement ( 'span' );
     
-        delete_button_element.setAttribute ( 'type'   , 'button'                            );
+        delete_button_element.setAttribute ( 'type' , 'button' );
         delete_button_element.setAttribute ( 'onclick', `Items.deleteItem ( '${item.id}' )` );
     
-        icon .setAttribute ( 'class', 'oi' );
-        icon .setAttribute ( 'data-glyph', 'trash' );
+        icon.setAttribute ( 'class', 'oi' );
+        icon.setAttribute ( 'data-glyph', 'trash' );
     
-        delete_button_element .appendChild ( icon );
+        delete_button_element.appendChild ( icon );
     
         return delete_button_element;
     }
@@ -195,25 +203,32 @@ let Items = ( function () {
     }
     
     return {
-        createItem: createItem,
-        display:    displayAll,
-        deleteItem: deleteItem,
-        clearAll:   clearAll,
-        addNewItem: getTextAndCreateNewItem,
+        createItem : createItem,
+        display    : displayAll,
+        deleteItem : deleteItem,
+        clearAll   : clearAll,
+        addNewItem : addItemFromEntryBox,
         // only for debugging purposes
-        printItems: () => { console.log ( items_list ); }
+        // printItems: () => { console.log ( items_list ); }
     }
 } ) ();
 
 document.body.onload = function () {
     /* Listen for keyup events. If the keycode corresponds to the Enter key,
      * add the item to the to-do list. */
-    document.getElementById ( 'item-text-input' )
-            .addEventListener ( 'keyup', event => {
-                /* keycode 13 is Enter */
-                if ( event.keyCode === 13 ) Items.addNewItem ();
-            } );
+    document
+        .getElementById ( 'item-text-input' )
+        .addEventListener ( 'keyup', event => {
+            /* keycode 13 is Enter */
+            if ( event.keyCode === 13 ) entryBoxCallback ();
+        } );
+
+    /* run the 'main' function to demonstrate the program's functionality, */
     main ();
+}
+
+function entryBoxCallback () {
+    Items.addNewItem ();
 }
 
 function main () {

@@ -17,25 +17,25 @@ let SVGCheckbox = ( function () {
     };
 
     function createSVGEl ( def ) {
-        let svg = document .createElementNS ( "http://www.w3.org/2000/svg", "svg" );
+        let svg = document.createElementNS ( "http://www.w3.org/2000/svg", "svg" );
 
         if ( def ) {
-            svg .setAttributeNS (
+            svg.setAttributeNS (
                  null,
                 'viewBox',
-                 def .viewBox
+                 def.viewBox
             );
-            svg .setAttributeNS (
+            svg.setAttributeNS (
                  null,
                 'preserveAspectRatio',
-                 def .preserveAspectRatio
+                 def.preserveAspectRatio
             );
         }
         else {
-            svg .setAttributeNS ( null, 'viewBox', '0 0 100 100' );
+            svg.setAttributeNS ( null, 'viewBox', '0 0 100 100' );
         }
 
-        svg .setAttribute ( 'xmlns', 'http://www.w3.org/2000/svg' );
+        svg.setAttribute ( 'xmlns', 'http://www.w3.org/2000/svg' );
 
         return svg;
     }
@@ -43,18 +43,18 @@ let SVGCheckbox = ( function () {
     function controlCheckbox ( el, type, svg_def ) {
         let svg = createSVGEl ( svg_def );
 
-        el .parentNode .appendChild ( svg );
-        if ( el .checked ) {
+        el.parentNode.appendChild ( svg );
+        if ( el.checked ) {
             draw ( el, type );
         }
         else {
             reset ( el );
         }
 
-        el .addEventListener (
+        el.addEventListener (
             'change',
             () => {
-                if ( el .checked ) {
+                if ( el.checked ) {
                     draw ( el, type );
                 }
                 else {
@@ -67,77 +67,78 @@ let SVGCheckbox = ( function () {
     function draw ( el, type ) {
         let paths = [];
         let path_def, anim_def;
-        let svg = el .parentNode .querySelector ( 'svg' );
-        console.log ( el );
+        let svg = el.parentNode.querySelector ( 'svg' );
+        //console.log ( el );
         
-        path_def = path_defs .checkmark;
-        anim_def = anim_defs .checkmark;
+        path_def = path_defs.checkmark;
+        anim_def = anim_defs.checkmark;
 
         paths.push (
-            document .createElementNS (
+            document.createElementNS (
                 'http://www.w3.org/2000/svg',
                 'path'
             )
         );
 
         if ( type === 'cross' || type === 'list' ) {
-            paths .push (
-                document .createElementNS (
+            paths.push (
+                document.createElementNS (
                     'http://www.w3.org/2000/svg',
                     'path'
                 )
             );
         }
 
-        for ( var i = 0, len = paths .length; i < len; ++ i ) {
+        for ( var i = 0, len = paths.length; i < len; i ++ ) {
             let path = paths [ i ];
 
-            svg .appendChild ( path );
+            svg.appendChild ( path );
 
-            path .setAttributeNS ( null, 'd', path_def [ i ] ) ;
+            path.setAttributeNS ( null, 'd', path_def [ i ] );
             
-            let length = path .getTotalLength ();
+            let length = path.getTotalLength ();
 
-            path .style .strokeDasharray = length + ' ' + length;
+            path.style.strokeDasharray = length + ' ' + length;
 
             if ( i === 0 ) {
-                path .style .strokeDashoffset = Math.floor ( length ) - 1;
+                path.style.strokeDashoffset = Math.floor ( length ) - 1;
             }
             else {
-                path .style .strokeDashoffset = length;
+                path.style.strokeDashoffset = length;
             }
 
-            path .getBoundingClientRect ()
+            path.getBoundingClientRect ();
 
-            path .style .transition = path .style .WebkitTransition
-                                    = path .style .MozTransition
+            path.style.transition = path.style.WebkitTransition
+                                    = path.style.MozTransition
                                     = 'stroke-dashoffset '
-                                        + anim_def .speed
+                                        + anim_def.speed
                                         + 's '
-                                        + anim_def .easing
+                                        + anim_def.easing
                                         + ' '
-                                        + i * anim_def .speed
+                                        + i * anim_def.speed
                                         + 's';
 
-            path .style .strokeDashoffset = '0';
+            path.style.strokeDashoffset = '0';
         }
     }
 
     function reset ( el ) {
-        Array .prototype .slice .call (
-            el .parentNode .querySelectorAll (
+        Array.prototype.slice.call (
+            el.parentNode.querySelectorAll (
                 'svg > path'
             )
-        ) .forEach (
+        )
+        .forEach (
             ( el ) => {
-                el .parentNode .removeChild ( el );
+                el.parentNode.removeChild ( el );
             }
         );
     }
 
     return {
-        controlCheckbox: controlCheckbox,
-        draw:            draw
+        controlCheckbox : controlCheckbox,
+        draw : draw
     };
 } ) ();
 
