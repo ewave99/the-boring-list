@@ -1,6 +1,7 @@
 /* TODOS:
- * - This code is a little messy in terms of comments and the actual order of
- * the functions. Sort it out.
+ * - Implement a method to set the item values in localStorage.
+ * - Implement a method to check if any items are stored in localStorage. If
+ *   there are, load them into the current set of items.
  */
 
 /* here we declare an object which exports various public functions and contains
@@ -66,6 +67,9 @@ let Items = ( function () {
 
         /* push the information object to the list of items */
         items_list.push ( item );
+
+        /* save all the items into local storage */
+        saveItemsIntoLocalStorage ();
 
         /* display the item on the page */
         displayItem ( item );
@@ -178,7 +182,10 @@ let Items = ( function () {
         let icon = document.createElement ( 'span' );
 
         delete_button_element.setAttribute ( 'type' , 'button' );
-        delete_button_element.setAttribute ( 'onclick', `Items.deleteItem ( '${item.id}' )` );
+        delete_button_element.setAttribute (
+            'onclick',
+            `Items.deleteItem ( '${item.id}' )`
+        );
 
         icon.setAttribute ( 'class', 'oi' );
         icon.setAttribute ( 'data-glyph', 'trash' );
@@ -202,12 +209,65 @@ let Items = ( function () {
         items_list = items_list.filter ( ({ id }) => id != item_id );
     }
 
+    function checkboxCallback ( item_id, checked_state ) {
+        let item_index = items_list.findIndex ( ({ id }) => id == item_id );
+
+        items_list [ item_index ].completed = checked_state;
+
+        saveItemsIntoLocalStorage ();
+    }
+
+    function saveItemsIntoLocalStorage () {
+        if ( storageAvailable ( 'localStorage' ) ) {
+            localStorage.setItem (
+                "items_list",
+                JSON.stringify (
+                    items_list.map (
+                        ({ text, completed }) => ({
+                            text : text,
+                            completed : completed
+                        })
+                    )
+                )
+            );
+        }
+    }
+
+    function storageAvailable ( type ) {
+        /* this function was obtained off the Mozilla website */
+
+        var storage;
+        try {
+            storage = window [ type ];
+            var x = '__storage_test__';
+            storage.setItem ( x, x );
+            storage.removeItem ( x );
+            return true;
+        }
+        catch ( e ) {
+            return e instanceof DOMException && (
+                    // everything except Firefox
+                    e.code === 22 ||
+                    // Firefox
+                    e.code === 1014 ||
+                    // test name field too, because code might not be present
+                    // everything except Firefox
+                    e.name === 'QuotaExceededError' ||
+                    // Firefox
+                    e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+                ) &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                ( storage && storage.length !== 0 );
+        }
+    }
+
     return {
         createItem : createItem,
         display : displayAll,
         deleteItem : deleteItem,
         clearAll : clearAll,
         addNewItem : addItemFromEntryBox,
+        checkboxCallback : checkboxCallback,
         // only for debugging purposes
         // printItems: () => { console.log ( items_list ); }
     }
@@ -224,7 +284,7 @@ document.body.onload = function () {
         } );
 
     /* run the 'main' function to demonstrate the program's functionality, */
-    main ();
+    //main ();
 }
 
 function entryBoxCallback () {

@@ -56,9 +56,11 @@ let SVGCheckbox = ( function () {
             () => {
                 if ( el.checked ) {
                     draw ( el, type );
+                    Items.checkboxCallback ( el.parentNode.id, true );
                 }
                 else {
                     reset ( el );
+                    Items.checkboxCallback ( el.parentNode.id, false );
                 }
             }
         );
