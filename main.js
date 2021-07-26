@@ -197,16 +197,22 @@ let Items = ( function () {
 
     function clearAll () {
         /* walk through all the items, deleting them one by one. */
-        for ( { id } of items_list ) deleteItem ( id );
+        for ( { id } of items_list ) deleteItem ( id, save = false );
+
+        saveItemsIntoLocalStorage ();
     }
 
-    function deleteItem ( item_id ) {
+    function deleteItem ( item_id, save = true ) {
         /* remove the item node from the DOM so it is no longer visible. */
         LIST_CONTAINER.removeChild ( document.getElementById ( item_id ) );
 
         /* filter out the item information object from the list so the list no
          * longer contains the associated object. */
         items_list = items_list.filter ( ({ id }) => id != item_id );
+
+        if ( save ) {
+            saveItemsIntoLocalStorage ();
+        }
     }
 
     function checkboxCallback ( item_id, checked_state ) {
@@ -230,6 +236,22 @@ let Items = ( function () {
                     )
                 )
             );
+        }
+    }
+
+    function getItemsFromLocalStorage () {
+        items_list = [];
+
+        if ( storageAvailable ( 'localStorage' ) ) {
+            if ( "items_list" in localStorage ) {
+                let raw_list = JSON.parse (
+                    localStorage.getItem ( "items_list" )
+                );
+
+                for ( { text, completed } of raw_list ) {
+                    createItem ( text, completed );
+                }
+            }
         }
     }
 
@@ -268,6 +290,7 @@ let Items = ( function () {
         clearAll : clearAll,
         addNewItem : addItemFromEntryBox,
         checkboxCallback : checkboxCallback,
+        init : getItemsFromLocalStorage,
         // only for debugging purposes
         // printItems: () => { console.log ( items_list ); }
     }
@@ -282,6 +305,8 @@ document.body.onload = function () {
             /* keycode 13 is Enter */
             if ( event.keyCode === 13 ) entryBoxCallback ();
         } );
+
+    Items.init ();
 
     /* run the 'main' function to demonstrate the program's functionality, */
     //main ();
